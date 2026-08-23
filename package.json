@@ -16,5 +16,9 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "scripts": {
+    "build": "node --check server.js",
+    "start": "node server.js"
   }
 }
