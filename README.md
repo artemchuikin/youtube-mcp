@@ -724,6 +724,20 @@ npx ajv-cli@5 validate --spec=draft2020 -s mcp.schema.json    -d mcp.json
 - There is no OAuth flow yet, so clients whose connectors cannot send a custom header (Claude
   Desktop and Claude Web) should go through Claude Code for now.
 
+## 🐳 A container, if you need one
+
+The server is hosted, so nothing has to run on your machine. But stdio-only clients, sandboxes and
+container platforms sometimes want a process of their own, and the repo carries a Dockerfile for
+exactly that. It builds a thin bridge (`mcp-remote`) that forwards every MCP message to the hosted
+endpoint and injects the key from the environment; no request is served locally.
+
+```bash
+docker build -t transcriptout-mcp https://github.com/artemchuikin/youtube-mcp.git
+docker run -i -e TRANSCRIPTOUT_API_KEY=sk_your_key transcriptout-mcp
+```
+
+Without a key the container still answers `initialize` and `tools/list`; tool calls ask for one.
+
 ---
 
 ## 🍳 Recipes
