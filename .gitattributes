@@ -1,0 +1,5 @@
+# linguist: this repo presents a hosted service (docs, manifests, skills); the bundled local
+# server and Dockerfile are companion tooling — keep them out of the language bar so the repo
+# does not present itself as a JavaScript project.
+server.js linguist-vendored
+Dockerfile linguist-vendored
