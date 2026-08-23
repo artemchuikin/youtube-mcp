@@ -16,4 +16,6 @@ RUN npm install -g mcp-remote && npm cache clean --force
 
 ENV TRANSCRIPTOUT_API_KEY=""
 
-ENTRYPOINT ["/bin/sh", "-c", "exec mcp-remote https://api.transcriptout.com/mcp --transport http-only --header \"Authorization: Bearer ${TRANSCRIPTOUT_API_KEY}\""]
+# CMD rather than ENTRYPOINT: catalog build tooling (Glama) reads the command from CMD and
+# refuses an image without one. The sh -c wrapper is what expands ${TRANSCRIPTOUT_API_KEY}.
+CMD ["/bin/sh", "-c", "exec mcp-remote https://api.transcriptout.com/mcp --transport http-only --header \"Authorization: Bearer ${TRANSCRIPTOUT_API_KEY}\""]
