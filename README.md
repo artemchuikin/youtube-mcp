@@ -724,19 +724,25 @@ npx ajv-cli@5 validate --spec=draft2020 -s mcp.schema.json    -d mcp.json
 - There is no OAuth flow yet, so clients whose connectors cannot send a custom header (Claude
   Desktop and Claude Web) should go through Claude Code for now.
 
-## 🐳 A container, if you need one
+## 🐳 Run it locally
 
-The server is hosted, so nothing has to run on your machine. But stdio-only clients, sandboxes and
-container platforms sometimes want a process of their own, and the repo carries a Dockerfile for
-exactly that. It builds a thin bridge (`mcp-remote`) that forwards every MCP message to the hosted
-endpoint and injects the key from the environment; no request is served locally.
+The hosted endpoint needs no install, but stdio-only clients, sandboxes and container platforms
+sometimes want a process of their own. The repo carries one: `server.js` is a complete local MCP
+server (official SDK, stdio transport) whose 14 tools each make one HTTPS call to the TranscriptOut
+REST API — the same shape as any SaaS-backed MCP server.
 
 ```bash
+# as a container
 docker build -t transcriptout-mcp https://github.com/artemchuikin/youtube-mcp.git
 docker run -i -e TRANSCRIPTOUT_API_KEY=sk_your_key transcriptout-mcp
+
+# or straight from a checkout (Node 20+)
+npm install && TRANSCRIPTOUT_API_KEY=sk_your_key node server.js
 ```
 
-Without a key the container still answers `initialize` and `tools/list`; tool calls ask for one.
+Without a key it still connects and lists all tools; tool calls answer with a clear 401 that says
+where to get one. Tool definitions ship in `tools.json` and refresh from the live catalog at
+startup when the network allows, so the local list never goes stale.
 
 ---
 

@@ -1,0 +1,694 @@
+[
+  {
+    "name": "get_transcript",
+    "title": "Get transcript",
+    "description": "Get the transcript (subtitles) of a YouTube video. Accepts a video id or any YouTube URL. Set video_metadata=true to get the title, channel and duration in the SAME call — do not call get_video_info first, that is a second billed call for data this one already returns. format=text returns plain readable text (default, cheapest to read); format=json returns timed segments with start/duration in seconds; srt/vtt return ready subtitle file bodies and srv3 the raw YouTube XML. Prefer text unless you need timestamps or a file. Costs 1 credit.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "video": {
+          "type": "string",
+          "description": "YouTube video id or URL"
+        },
+        "lang": {
+          "type": "string",
+          "description": "Language code of the track, e.g. 'en', 'de'. Default 'en'."
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "text",
+            "json",
+            "srt",
+            "vtt",
+            "srv3"
+          ],
+          "description": "'text' = plain text (default), 'json' = timed segments, 'srt'/'vtt' = subtitle file body, 'srv3' = raw YouTube XML (srv3 does not combine with segment)"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "auto"
+          ],
+          "description": "Track kind. Omit to prefer a manual track and fall back to auto"
+        },
+        "segment": {
+          "type": "integer",
+          "minimum": 20,
+          "maximum": 5000,
+          "description": "Max characters per segment. Raise it when chunking the transcript for embeddings or retrieval — 500-1500 gives chunks with enough context; lower it for subtitle-sized lines. Left out, an auto-generated track is cut into ~180-character segments and a manual one is returned exactly as its author broke it, so pass this whenever you need one size regardless of which track answers."
+        },
+        "video_metadata": {
+          "type": "boolean",
+          "description": "Include the video's title, channel, duration and views alongside the transcript. Replaces a separate get_video_info call — same one credit either way."
+        }
+      },
+      "required": [
+        "video"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "video_id": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "transcript": {
+          "description": "format=json: array of {text, start, duration} segments (seconds); text/srt/vtt/srv3: one string in that format"
+        },
+        "available_langs": {
+          "type": "array"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Get transcript",
+      "readOnlyHint": true,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_video_info",
+    "title": "Get video info",
+    "description": "Get metadata for one YouTube video (title, channel, duration, views, thumbnails) plus the list of available transcript languages, WITHOUT downloading the subtitles. Use it only when the transcript itself is not wanted. If you are going to fetch the transcript anyway, call get_transcript with video_metadata=true instead — it returns both for one credit, where these are two separate calls and two credits.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "YouTube video id or URL"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "available_langs": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Get video info",
+      "readOnlyHint": true,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "search_youtube",
+    "title": "Search YouTube",
+    "description": "Search YouTube for videos or channels. Paginate by passing next_page_token from the previous result. has_more tells you whether another page exists.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "q": {
+          "type": "string",
+          "description": "Search query (required unless paginating)"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "video",
+            "channel"
+          ],
+          "description": "Default 'video'"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Results per page, 1-50 (default 20)"
+        },
+        "next_page_token": {
+          "type": "string",
+          "description": "Token from a previous result"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "next_page_token": {
+          "type": "string"
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Search YouTube",
+      "readOnlyHint": true,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_channel_videos",
+    "title": "List channel videos",
+    "description": "List videos from a channel's Videos tab, newest first. Accepts an @handle, a UC... channel id or a channel URL. ids_only=true returns just video ids (up to 500 per page) — use it when you only need ids to fetch transcripts.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "@handle, channel name, UC... channel id or channel URL (required unless paginating)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Page size. Up to 100, or up to 500 with ids_only"
+        },
+        "next_page_token": {
+          "type": "string",
+          "description": "Token from a previous result"
+        },
+        "ids_only": {
+          "type": "boolean",
+          "description": "Return video_ids[] instead of full video objects"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer"
+        },
+        "videos": {
+          "type": "array"
+        },
+        "video_ids": {
+          "type": "array"
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "List channel videos",
+      "readOnlyHint": true,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "search_channel_videos",
+    "title": "Search within a channel",
+    "description": "Search videos inside one channel using YouTube's native relevance search. Results are ranked by relevance, so a video whose title lacks the query word is normal.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "@handle, channel name, UC... channel id or channel URL"
+        },
+        "q": {
+          "type": "string",
+          "description": "Query to search within the channel"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Results per page, 1-100 (default 30)"
+        },
+        "next_page_token": {
+          "type": "string",
+          "description": "Token from a previous result"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "type": "string"
+        },
+        "videos": {
+          "type": "array"
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Search within a channel",
+      "readOnlyHint": true,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "latest_channel_videos",
+    "title": "Latest channel videos",
+    "description": "Get the ~15 most recent videos of a channel from its RSS feed. Fastest and cheapest way to check what a channel published recently.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "@handle, channel name, UC... channel id or channel URL"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "type": "string"
+        },
+        "videos": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Latest channel videos",
+      "readOnlyHint": true,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "list_playlist_videos",
+    "title": "List playlist videos",
+    "description": "List videos of a playlist in playlist order. Accepts a PL... playlist id or a URL with list=. ids_only=true returns just video ids (up to 500 per page).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PL... playlist id or URL (required unless paginating)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Page size. Up to 100, or up to 500 with ids_only"
+        },
+        "next_page_token": {
+          "type": "string",
+          "description": "Token from a previous result"
+        },
+        "ids_only": {
+          "type": "boolean",
+          "description": "Return video_ids[] instead of full video objects"
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "playlist": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer"
+        },
+        "videos": {
+          "type": "array"
+        },
+        "video_ids": {
+          "type": "array"
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "List playlist videos",
+      "readOnlyHint": true,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "search_playlist_videos",
+    "title": "Search within a playlist",
+    "description": "Find videos inside a playlist by a substring of the title (case-insensitive). YouTube has no native playlist search, so this scans up to 500 playlist items. truncated=true means there may be more matches beyond the scanned window.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PL... playlist id or URL"
+        },
+        "q": {
+          "type": "string",
+          "description": "Substring to match in the video title"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Max matches to return, 1-100 (default 30)"
+        }
+      },
+      "required": [
+        "id",
+        "q"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Search within a playlist",
+      "readOnlyHint": true,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "submit_transcripts_job",
+    "title": "Submit transcripts batch",
+    "description": "Queue transcripts for MANY videos at once (up to 4000) and get a job_id back immediately — the work continues in the background. Use this instead of calling get_transcript in a loop for more than a handful of videos. Feed it video ids from list_channel_videos or list_playlist_videos (ids_only=true). Next: poll get_transcripts_job until status is 'done', reading finished transcripts from get_transcripts_results as they land. Costs 1 credit per video, charged on submit; duplicates are removed first. Requires a user key (sk_...).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "videos": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Video ids or URLs, up to 4000. Duplicates are collapsed."
+        },
+        "lang": {
+          "type": "string",
+          "description": "Language code for every video, e.g. 'en'. Default 'en'."
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "text",
+            "json",
+            "srt",
+            "vtt",
+            "srv3"
+          ],
+          "description": "'text' = plain text (default), 'json' = timed segments, 'srt'/'vtt' = subtitle file body, 'srv3' = raw YouTube XML (srv3 does not combine with segment)"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "auto"
+          ],
+          "description": "Track kind. Omit to prefer a manual track and fall back to auto"
+        },
+        "segment": {
+          "type": "integer",
+          "minimum": 20,
+          "maximum": 5000,
+          "description": "Max characters per segment, for every video in the job. Raise it to 500-1500 when the transcripts are going into embeddings or retrieval. Left out, an auto-generated track is cut into ~180-character segments and a manual one keeps its author's own lines — so pass this when the whole job has to come back at one size."
+        },
+        "video_metadata": {
+          "type": "boolean",
+          "description": "Include each video's title, channel and duration alongside its transcript. Replaces a get_video_info call per video and costs nothing extra."
+        },
+        "idempotency_key": {
+          "type": "string",
+          "description": "Optional. Resubmitting the same list with the same key returns the SAME job instead of opening a second one and charging twice."
+        }
+      },
+      "required": [
+        "videos"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer"
+        },
+        "credits": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Submit transcripts batch",
+      "readOnlyHint": false,
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": true
+    }
+  },
+  {
+    "name": "get_transcripts_job",
+    "title": "Batch job progress",
+    "description": "Check the progress of a batch job: status (queued/running/done/cancelled), how many videos are ready, failed and still pending. Free — polling a job you already paid for costs nothing. Read the transcripts themselves with get_transcripts_results.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "id returned by submit_transcripts_job"
+        }
+      },
+      "required": [
+        "job_id"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer"
+        },
+        "done": {
+          "type": "integer"
+        },
+        "ready": {
+          "type": "integer"
+        },
+        "failed": {
+          "type": "integer"
+        },
+        "pending": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Batch job progress",
+      "readOnlyHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_transcripts_results",
+    "title": "Batch job results",
+    "description": "Read finished transcripts from a batch job, in the order submitted. Results appear as they are fetched, so this can be called before the job is done. Each entry is exactly what get_transcript returns for that video, plus its status. Page with next_page_token. Free.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "id returned by submit_transcripts_job"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "Entries per page, 1-500 (default 100)"
+        },
+        "next_page_token": {
+          "type": "string",
+          "description": "Token from a previous result"
+        }
+      },
+      "required": [
+        "job_id"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer"
+        },
+        "results": {
+          "type": "array"
+        },
+        "next_page_token": {
+          "type": "string"
+        },
+        "has_more": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Batch job results",
+      "readOnlyHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_transcripts_result",
+    "title": "One batch result",
+    "description": "Read ONE video's result out of a batch job by its video id, without paging through get_transcripts_results. 404 means the job does not exist or this video has not finished yet — check get_transcripts_job before concluding anything. Free.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "id returned by submit_transcripts_job"
+        },
+        "video_id": {
+          "type": "string",
+          "description": "one of the video ids the job was submitted with"
+        }
+      },
+      "required": [
+        "job_id",
+        "video_id"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "video_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "transcript": {
+          "description": "format=json: array of {text, start, duration} segments (seconds); text/srt/vtt/srv3: one string in that format"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "One batch result",
+      "readOnlyHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "cancel_transcripts_job",
+    "title": "Cancel batch job",
+    "description": "Cancel a batch job. Credits are refunded ONLY for videos not started yet — anything already fetched stays in the results and stays paid for. Free.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string",
+          "description": "id returned by submit_transcripts_job"
+        }
+      },
+      "required": [
+        "job_id"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Cancel batch job",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_credits",
+    "title": "Credit balance",
+    "description": "Check the remaining credit balance of the API key. Free. Use it when the user asks how many credits are left, or before submit_transcripts_job to confirm a large batch fits the balance (the batch charges 1 credit per video on submit).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "credits": {
+          "type": "integer"
+        },
+        "metered": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "annotations": {
+      "title": "Credit balance",
+      "readOnlyHint": true,
+      "openWorldHint": false
+    }
+  }
+]

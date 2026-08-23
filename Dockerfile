@@ -1,21 +1,19 @@
-# A thin stdio bridge to the hosted server, not the server itself.
-#
-# The actual MCP server runs at https://api.transcriptout.com/mcp (streamable HTTP). This image
-# exists for clients and platforms that want to run a container speaking stdio — Glama releases,
-# local stdio-only clients, sandboxes. It forwards every MCP message to the hosted endpoint and
-# injects the API key from the environment; no request is served locally.
+# Builds and runs the local MCP server (server.js): 14 YouTube tools over stdio, each backed by
+# one HTTPS call to the TranscriptOut REST API — the same shape as any SaaS-backed MCP server.
+# The hosted streamable-HTTP endpoint at https://api.transcriptout.com/mcp remains the zero-install
+# path; this image is for stdio clients, sandboxes and catalog deployments.
 #
 # Run it:
-#   docker run -i -e TRANSCRIPTOUT_API_KEY=sk_your_key youtube-mcp
+#   docker run -i -e TRANSCRIPTOUT_API_KEY=sk_your_key transcriptout-mcp
 #
-# Without a key the metadata methods (initialize, tools/list, ping) still answer — the hosted
-# server serves those anonymously — and tool calls return 401 until a key is provided.
+# Without a key the server still connects and lists all tools; tool calls answer with a clear 401
+# that says where to get one (free, 100 credits on signup).
 FROM node:22-alpine
 
-RUN npm install -g mcp-remote && npm cache clean --force
+WORKDIR /app
+COPY package.json server.js tools.json ./
+RUN npm install --omit=dev && npm cache clean --force
 
 ENV TRANSCRIPTOUT_API_KEY=""
 
-# CMD rather than ENTRYPOINT: catalog build tooling (Glama) reads the command from CMD and
-# refuses an image without one. The sh -c wrapper is what expands ${TRANSCRIPTOUT_API_KEY}.
-CMD ["/bin/sh", "-c", "exec mcp-remote https://api.transcriptout.com/mcp --transport http-only --header \"Authorization: Bearer ${TRANSCRIPTOUT_API_KEY}\""]
+CMD ["node", "server.js"]
