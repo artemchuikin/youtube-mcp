@@ -1,0 +1,28 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "transcriptout",
+  "version": "1.0.0",
+  "description": "YouTube transcripts in five formats, video and channel search, channel browsing, playlist extraction and asynchronous bulk transcript jobs for AI agents, via the hosted TranscriptOut MCP server. Free tier, one API key, no local install.",
+  "author": {
+    "name": "TranscriptOut",
+    "email": "support@transcriptout.com",
+    "url": "https://transcriptout.com"
+  },
+  "homepage": "https://transcriptout.com",
+  "repository": "https://github.com/artemchuikin/youtube-mcp",
+  "license": "MIT",
+  "keywords": [
+    "youtube",
+    "transcript",
+    "captions",
+    "subtitles",
+    "video-search",
+    "channel-search",
+    "playlists",
+    "batch",
+    "summarization",
+    "research",
+    "transcriptout",
+    "mcp"
+  ]
+}

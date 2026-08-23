@@ -1,0 +1,34 @@
+# Smithery configuration for TranscriptOut MCP
+# https://smithery.ai
+#
+# This MCP is a remote server hosted at https://api.transcriptout.com/mcp.
+# Smithery users can connect directly to the remote endpoint, no local install required.
+
+startCommand:
+  type: http
+  url: https://api.transcriptout.com/mcp
+  description: >-
+    YouTube Transcript & Search MCP Server. 14 tools: transcript
+    extraction (text, JSON, SRT, VTT, raw srv3, adjustable segment size), video metadata, video and channel
+    search, channel browsing, in-channel search, playlist extraction and search, and an
+    asynchronous batch job for up to 4,000 transcripts. Authenticate with an API key
+    (Bearer). Free tier: 100 credits on signup, no card.
+
+metadata:
+  homepage: https://transcriptout.com
+  documentation: https://transcriptout.com/docs
+  tags:
+    - youtube
+    - youtube-api
+    - youtube-transcript
+    - youtube-search
+    - transcript
+    - transcripts
+    - subtitles
+    - captions
+    - video
+    - playlist
+    - channel
+    - batch
+    - ai-agents
+    - remote-mcp
