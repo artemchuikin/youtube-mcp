@@ -853,6 +853,17 @@ five transcript formats plus raw file download (`download=true`).
 
 Base URL: `https://api.transcriptout.com/v1`
 
+Client libraries wrap it for Python and Node.js. Both are drop-in replacements for the popular
+open-source ones, so switching is one import line.
+
+```bash
+pip install transcriptout   # replaces youtube-transcript-api
+npm i transcriptout         # replaces youtube-transcript
+```
+
+Source: [youtube-transcript-python](https://github.com/artemchuikin/youtube-transcript-python) ·
+[youtube-transcript-js](https://github.com/artemchuikin/youtube-transcript-js)
+
 ---
 
 ## 🔗 Links
@@ -860,6 +871,8 @@ Base URL: `https://api.transcriptout.com/v1`
 - 🌐 **Website:** [transcriptout.com](https://transcriptout.com)
 - 📚 **Docs:** [transcriptout.com/docs](https://transcriptout.com/docs)
 - 🧰 **Agent skills (same backend, no MCP required):** [github.com/artemchuikin/youtube-skills](https://github.com/artemchuikin/youtube-skills)
+- 🐍 **Python library:** [github.com/artemchuikin/youtube-transcript-python](https://github.com/artemchuikin/youtube-transcript-python)
+- 📦 **Node.js library:** [github.com/artemchuikin/youtube-transcript-js](https://github.com/artemchuikin/youtube-transcript-js)
 - 💬 **Contact:** support@transcriptout.com
 
 ---
