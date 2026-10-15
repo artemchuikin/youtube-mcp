@@ -1,7 +1,7 @@
 <!-- mcp-name: com.transcriptout/youtube-transcript-and-youtube-search -->
 
 <p align="center">
-  <a href="https://transcriptout.com">
+  <a href="https://transcriptout.com/?utm_source=youtube-mcp&utm_medium=readme">
     <img src="public/brand/logo-512.png" width="120" height="120" alt="TranscriptOut" />
   </a>
 </p>
@@ -21,8 +21,8 @@
 </p>
 
 <p align="center">
-  <a href="https://transcriptout.com"><img src="https://img.shields.io/badge/Website-transcriptout.com-FF3B00?style=for-the-badge" alt="Website"/></a>
-  <a href="https://transcriptout.com/docs"><img src="https://img.shields.io/badge/Docs-API_Reference-06B6D4?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Docs"/></a>
+  <a href="https://transcriptout.com/?utm_source=youtube-mcp&utm_medium=readme"><img src="https://img.shields.io/badge/Website-transcriptout.com-FF3B00?style=for-the-badge" alt="Website"/></a>
+  <a href="https://transcriptout.com/docs?utm_source=youtube-mcp&utm_medium=readme"><img src="https://img.shields.io/badge/Docs-API_Reference-06B6D4?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Docs"/></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-4CAF50?style=for-the-badge" alt="MIT License"/></a>
 </p>
 
@@ -77,8 +77,8 @@ data into an agent actually compare.
 
 ## ⚡ Quick start
 
-**1. Get an API key.** Sign up at [transcriptout.com](https://transcriptout.com) and create a key
-in the [dashboard](https://transcriptout.com/dashboard). New accounts receive 100 free credits and
+**1. Get an API key.** Sign up at [transcriptout.com](https://transcriptout.com/?utm_source=youtube-mcp&utm_medium=readme) and create a key
+in the [dashboard](https://transcriptout.com/dashboard?utm_source=youtube-mcp&utm_medium=readme). New accounts receive 100 free credits and
 no card is asked. Keys start with `sk_` and are shown once.
 
 **2. Point your client at the server.** It speaks streamable HTTP and authenticates with one
@@ -345,7 +345,7 @@ claude mcp add --transport http transcriptout https://api.transcriptout.com/mcp 
 
 Claude's custom connectors authenticate remote servers via OAuth, which TranscriptOut does not
 offer yet (API keys only). On desktop, use **Claude Code** (see above), which supports API-key
-headers. OAuth support is on the roadmap. Watch the [changelog](https://transcriptout.com/changelog).
+headers. OAuth support is on the roadmap. Watch the [changelog](https://transcriptout.com/changelog?utm_source=youtube-mcp&utm_medium=readme).
 
 </details>
 
@@ -377,7 +377,7 @@ Or add this to VS Code user settings (`settings.json`):
 2. Under "Actions" or "Tools", add a new **MCP Server**
 3. URL: `https://api.transcriptout.com/mcp`
 4. Auth Type: **API Key**
-5. Paste your API key from the [dashboard](https://transcriptout.com/dashboard)
+5. Paste your API key from the [dashboard](https://transcriptout.com/dashboard?utm_source=youtube-mcp&utm_medium=readme)
 
 </details>
 
@@ -716,7 +716,7 @@ npx ajv-cli@5 validate --spec=draft2020 -s mcp.schema.json    -d mcp.json
 ## 🔑 Keys and security
 
 - A key is shown once, at creation. Keep it in an environment variable and out of version control.
-- A leaked key dies the moment you revoke it in the [dashboard](https://transcriptout.com/dashboard).
+- A leaked key dies the moment you revoke it in the [dashboard](https://transcriptout.com/dashboard?utm_source=youtube-mcp&utm_medium=readme).
   An account holds up to 20 keys, so give every machine its own.
 - Prefer to stay in the chat? An agent with the companion
   [youtube-skills](https://github.com/artemchuikin/youtube-skills) installed can open the account
@@ -791,7 +791,7 @@ Anything the service fails to deliver is refunded per video, so the bill matches
   limit, our capacity) are refunded automatically. The running balance rides in the
   `X-Credits-Remaining` header.
 - One-time credit packs that never expire can be bought on top of an active subscription.
-- [View pricing](https://transcriptout.com/#pricing) · [Manage billing](https://transcriptout.com/billing)
+- [View pricing](https://transcriptout.com/?utm_source=youtube-mcp&utm_medium=readme#pricing) · [Manage billing](https://transcriptout.com/billing?utm_source=youtube-mcp&utm_medium=readme)
 
 ---
 
@@ -802,15 +802,15 @@ Anything the service fails to deliver is refunded per video, so the bill matches
 
 - Verify your API key starts with `sk_`
 - Check for extra spaces when copying
-- Ensure the key is active in your [dashboard](https://transcriptout.com/dashboard)
+- Ensure the key is active in your [dashboard](https://transcriptout.com/dashboard?utm_source=youtube-mcp&utm_medium=readme)
 - Revoked keys fail immediately. Issue a new one in the dashboard
 </details>
 
 <details>
 <summary><b>No credits (402)</b></summary>
 
-- Check your balance in the [dashboard](https://transcriptout.com/dashboard)
-- Subscribe or buy a credit pack at [transcriptout.com/billing](https://transcriptout.com/billing)
+- Check your balance in the [dashboard](https://transcriptout.com/dashboard?utm_source=youtube-mcp&utm_medium=readme)
+- Subscribe or buy a credit pack at [transcriptout.com/billing](https://transcriptout.com/billing?utm_source=youtube-mcp&utm_medium=readme)
 </details>
 
 <details>
@@ -849,7 +849,7 @@ five transcript formats plus raw file download (`download=true`).
 | --------------- | ---------------------- | ----------------------------------------------------- |
 | **Best for**    | AI assistants & agents | Apps & backend services                               |
 | **Setup**       | Add a URL + key        | Code integration                                      |
-| **Get started** | This README            | [API docs →](https://transcriptout.com/docs)          |
+| **Get started** | This README            | [API docs →](https://transcriptout.com/docs?utm_source=youtube-mcp&utm_medium=readme)          |
 
 Base URL: `https://api.transcriptout.com/v1`
 
@@ -868,8 +868,8 @@ Source: [youtube-transcript-python](https://github.com/artemchuikin/youtube-tran
 
 ## 🔗 Links
 
-- 🌐 **Website:** [transcriptout.com](https://transcriptout.com)
-- 📚 **Docs:** [transcriptout.com/docs](https://transcriptout.com/docs)
+- 🌐 **Website:** [transcriptout.com](https://transcriptout.com/?utm_source=youtube-mcp&utm_medium=readme)
+- 📚 **Docs:** [transcriptout.com/docs](https://transcriptout.com/docs?utm_source=youtube-mcp&utm_medium=readme)
 - 🧰 **Agent skills (same backend, no MCP required):** [github.com/artemchuikin/youtube-skills](https://github.com/artemchuikin/youtube-skills)
 - 🐍 **Python library:** [github.com/artemchuikin/youtube-transcript-python](https://github.com/artemchuikin/youtube-transcript-python)
 - 📦 **Node.js library:** [github.com/artemchuikin/youtube-transcript-js](https://github.com/artemchuikin/youtube-transcript-js)

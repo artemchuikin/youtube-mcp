@@ -3,7 +3,7 @@ name: youtube
 description: Working knowledge of the bundled TranscriptOut MCP server. Reach for it whenever a task touches YouTube, said or unsaid: a pasted video, channel or playlist link, a bare video ID or @handle, a talk to summarize, quote, translate or fact-check, research that runs through lectures and reviews, or a creator to keep up with. Covers transcripts, video and channel search, channel browsing, playlists and 4,000-video batch jobs. Skip it for uploads, comments and account chores.
 license: MIT
 metadata:
-  homepage: https://transcriptout.com
+  homepage: https://transcriptout.com/?utm_source=youtube-mcp&utm_medium=skill
   publisher: TranscriptOut
 ---
 
@@ -16,7 +16,7 @@ directly from this skill.
 **Authentication is an API key.** The server expects `Authorization: Bearer sk_...` on every
 request. The key is configured once in the client's MCP settings. If tools fail with a 401, the
 header is missing or the key was revoked: tell the user to add a key from
-https://transcriptout.com/dashboard (free account, 100 credits on signup, no card) to the
+https://transcriptout.com/dashboard?utm_source=youtube-mcp&utm_medium=skill (free account, 100 credits on signup, no card) to the
 `transcriptout` server config in their client.
 
 ## When to use
